@@ -12,7 +12,7 @@ const FlightSearch = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`https://cors-anywhere.herokuapp.com/https://api.amadeus.com/v1/shopping/flight-offers`, {
+      const response = await axios.get(`https://api.amadeus.com/v1/shopping/flight-offers`, {
   params: {
     origin: origin,
     destination: destination,
@@ -21,7 +21,8 @@ const FlightSearch = () => {
   },
   headers: {
     "Authorization": "Bearer 8jG5A7TA9hkqzlKcrd7IjUIUkMHv"
-        }
+        },
+        mode: 'cors',
       });
       setFlightOffers(response.data);
     } catch (error) {
