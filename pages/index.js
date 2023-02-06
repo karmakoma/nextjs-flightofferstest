@@ -11,7 +11,7 @@ const options = {
 
 const searchFlightOffers = async (origin, destination, departureDate, numberOfAdults) => {
   try {
-    const response = await axios.get(`https://api.amadeus.com/v1/shopping/flight-offers`, {
+    const response = await axios.get(`https://cors-anywhere.herokuapp.com/https://api.amadeus.com/v1/shopping/flight-offers`, {
       params: {
         origin,
         destination,
