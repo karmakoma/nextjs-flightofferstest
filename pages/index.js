@@ -1,84 +1,55 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const FlightSearch = () => {
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [numberOfAdults, setNumberOfAdults] = useState('');
-  const [flightOffers, setFlightOffers] = useState(null);
+const ACCESS_TOKEN = '8jG5A7TA9hkqzlKcrd7IjUIUkMHv';
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await axios.get(`https://api.amadeus.com/v1/shopping/flight-offers`, {
-  params: {
-    origin: origin,
-    destination: destination,
-    departureDate: departureDate,
-    adults: numberOfAdults
-  },
+const options = {
   headers: {
-    "Authorization": "Bearer 8jG5A7TA9hkqzlKcrd7IjUIUkMHv"
-        },
-        mode: 'cors',
-      });
-      setFlightOffers(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    'Authorization': `Bearer ${ACCESS_TOKEN}`
+  }
+};
+
+const searchFlightOffers = async (origin, destination, departureDate, numberOfAdults) => {
+  try {
+    const response = await axios.get(`https://api.amadeus.com/v1/shopping/flight-offers`, {
+      params: {
+        origin,
+        destination,
+        departureDate,
+        adults: numberOfAdults
+      },
+      ...options
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const MyComponent = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await searchFlightOffers('LAX', 'NYC', '2023-03-01', 1);
+      setData(result);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="origin">Origin:</label>
-          <input
-            type="text"
-            id="origin"
-            value={origin}
-            onChange={(event) => setOrigin(event.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="destination">Destination:</label>
-          <input
-            type="text"
-            id="destination"
-            value={destination}
-            onChange={(event) => setDestination(event.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="departureDate">Departure Date:</label>
-          <input
-            type="text"
-            id="departureDate"
-            value={departureDate}
-            onChange={(event) => setDepartureDate(event.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="numberOfAdults">Number of Adults:</label>
-          <input
-            type="text"
-            id="numberOfAdults"
-            value={numberOfAdults}
-            onChange={(event) => setNumberOfAdults(event.target.value)}
-          />
-        </div>
-        <button type="submit">Search</button>
-      </form>
-      {flightOffers && (
-        <div>
-          <h2>Flight Offers</h2>
-          <pre>{JSON.stringify(flightOffers, null, 2)}</pre>
-        </div>
-      )}
+      {data && data.map((item) => (
+        <div key={item.id}>{item.name}</div>
+      ))}
     </div>
   );
 };
 
-export default FlightSearch;
+export default MyComponent;
