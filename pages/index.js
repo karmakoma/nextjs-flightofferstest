@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -11,15 +12,15 @@ const FlightSearch = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`https://api.amadeus.com/v1/shopping/flight-offers`, {
-        params: {
-          origin: origin,
-          destination: destination,
-          departureDate: departureDate,
-          adults: numberOfAdults
-        },
-        headers: {
-          "Authorization": "Bearer 8jG5A7TA9hkqzlKcrd7IjUIUkMHv"
+      const response = await axios.get(`https://cors-anywhere.herokuapp.com/https://api.amadeus.com/v1/shopping/flight-offers`, {
+  params: {
+    origin: origin,
+    destination: destination,
+    departureDate: departureDate,
+    adults: numberOfAdults
+  },
+  headers: {
+    "Authorization": "Bearer 8jG5A7TA9hkqzlKcrd7IjUIUkMHv"
         }
       });
       setFlightOffers(response.data);
